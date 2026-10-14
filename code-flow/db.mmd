@@ -1,0 +1,47 @@
+erDiagram
+    USERS ||--o{ CAMPAIGNS : creates
+    USERS ||--o{ SUBMISSIONS : submits
+    CAMPAIGNS ||--o{ SUBMISSIONS : receives
+    SUBMISSIONS ||--o{ PAYOUTS : records
+    CAMPAIGNS ||--o{ PAYOUTS : funds
+    USERS ||--o{ PAYOUTS : earns
+
+    USERS {
+        ObjectId _id PK
+        string name
+        string email UK "unique"
+        string passwordHash
+        string role "brand | creator"
+    }
+
+    CAMPAIGNS {
+        ObjectId _id PK
+        ObjectId brandId FK
+        string name
+        string platform "Instagram | YouTube"
+        number totalBudget
+        number remainingBudget
+        array milestones "views, payout pairs, ascending"
+        string status "live | closed"
+    }
+
+    SUBMISSIONS {
+        ObjectId _id PK
+        ObjectId campaignId FK
+        ObjectId creatorId FK
+        string postUrl "unique per campaign"
+        number views
+        number eligiblePayout "highest milestone crossed"
+        number allocatedPayout "running total actually paid"
+        boolean flagged "view spike flag"
+        datetime viewsUpdatedAt
+    }
+
+    PAYOUTS {
+        ObjectId _id PK
+        ObjectId submissionId FK
+        ObjectId campaignId FK
+        ObjectId creatorId FK
+        number amount "delta, not cumulative"
+        datetime createdAt
+    }

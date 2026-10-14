@@ -1,0 +1,21 @@
+
+flowchart TD
+    A[Landing Page] --> B[Login or Signup]
+    B --> C{User Role}
+    C -->|Brand| D[Brand Dashboard]
+    C -->|Creator| E[Creator Dashboard]
+    D --> F[Create Campaign]
+    F --> G[Save Campaign in MongoDB]
+    G --> D
+    E --> H[Browse Live Campaigns]
+    H --> I[View Campaign Details]
+    I --> J[Submit Social Post URL]
+    J --> K[Create Submission in MongoDB]
+    K --> L[Simulate View Update via PATCH API]
+    L --> M[Calculate Highest Milestone Payout]
+    M --> N{Remaining Budget Sufficient?}
+    N -->|Yes| O[Record Eligible Payout]
+    N -->|No| P[Apply Defined Budget-Cap Rule]
+    O --> Q[Update Creator Earnings]
+    O --> R[Update Brand Budget Summary]
+    P --> R
