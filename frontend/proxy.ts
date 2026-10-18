@@ -1,22 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from 'next/server';
 
-// This is an optimistic guard only. The protected server layout also decrypts
-// and validates the session before rendering any protected page.
-export function proxy(request: NextRequest) {
-  const hasSessionCookie = Boolean(request.cookies.get("memed_session")?.value);
-
-  if (!hasSessionCookie) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set(
-      "next",
-      request.nextUrl.pathname + request.nextUrl.search,
-    );
-    return NextResponse.redirect(loginUrl);
+// Optimistic check only (cookie present). Real authorization happens
+// server-side in lib/auth.ts, never rely on this alone.
+export function proxy(req: NextRequest) {
+  if (!req.cookies.has('memed_token')) {
+    return NextResponse.redirect(new URL('/login', req.url));
   }
-
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ["/brand/:path*", "/creator/:path*"],
-};
+export const config = { matcher: ['/brand/:path*', '/creator/:path*'] };
