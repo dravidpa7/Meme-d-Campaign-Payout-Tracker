@@ -16,6 +16,13 @@ export const errorMessage = (e: unknown) => {
 };
 
 
+type Options = {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: unknown;
+  auth?: boolean;
+};
+
+
 /** `path` must be a constant or contain only ids validated with `objectId`. */
 export async function api<T>(path: string, { method = 'GET', body, auth = true }: Options = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
