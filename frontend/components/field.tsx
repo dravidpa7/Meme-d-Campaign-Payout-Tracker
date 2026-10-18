@@ -1,52 +1,17 @@
-import { useId } from "react";
+import type { InputHTMLAttributes } from 'react';
 
-type FieldProps = {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  name: string;
-  type?: string;
-  placeholder?: string;
-  required?: boolean;
-  autoComplete?: string;
-  error?: string;
-  hint?: string;
-};
+  error?: string[];
+}
 
-export function Field({
-  label,
-  name,
-  type = "text",
-  placeholder,
-  required = false,
-  autoComplete,
-  error,
-  hint,
-}: FieldProps) {
-  const generatedId = useId();
-  const id = `${name}-${generatedId.replace(/:/g, "")}`;
-  const hintId = hint ? `${id}-hint` : undefined;
-  const errorId = error ? `${id}-error` : undefined;
-
+export function Field({ label, error, id, name, ...rest }: Props) {
+  const fieldId = id ?? name;
   return (
-    <div className="md-field">
-      <label className="md-label" htmlFor={id}>
-        {label}
-        {required ? <span aria-hidden="true"> *</span> : null}
-      </label>
-      <input
-        id={id}
-        className="md-input"
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        required={required}
-        autoComplete={autoComplete}
-        min={type === "number" ? 1 : undefined}
-        step={type === "number" ? 1 : undefined}
-        aria-invalid={Boolean(error)}
-        aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
-      />
-      {hint ? <span className="md-hint" id={hintId}>{hint}</span> : null}
-      {error ? <span className="md-error" id={errorId}>{error}</span> : null}
-    </div>
+    <label htmlFor={fieldId} className="flex flex-col gap-1 text-sm">
+      {label}
+      <input id={fieldId} name={name} className="rounded border px-3 py-2" {...rest} />
+      {error?.[0] && <span role="alert" className="text-red-600">{error[0]}</span>}
+    </label>
   );
 }
